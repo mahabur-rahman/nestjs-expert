@@ -12,13 +12,13 @@ export class User {
   @Prop()
   name: string;
 
-  @Prop({ unique: [true, 'Duplicate email found!'] })
+  @Prop({ unique: [true, 'Duplicate email address found!'] })
   email: string;
 
   @Prop()
   password: string;
 
-  @Prop()
+  @Prop({ default: [Role.USER] })
   role: Role[];
 }
 
