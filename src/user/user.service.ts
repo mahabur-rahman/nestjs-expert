@@ -11,6 +11,9 @@ export class UserService {
   ) {}
 
   //   get all users
+  getAll() {
+    return 'get all users';
+  }
 
   // get single user
 
