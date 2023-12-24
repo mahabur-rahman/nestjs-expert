@@ -61,6 +61,10 @@ export class AuthService {
 
     const token = this.jwtService.sign({ id: user._id });
 
-    return { user, token };
+    // Omitting the password field from the user object
+    const userWithoutPassword = { ...user.toJSON() };
+    delete userWithoutPassword.password;
+
+    return { user: userWithoutPassword, token };
   }
 }
