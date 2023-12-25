@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import { Category } from 'src/category/schema/category.schema';
 
 export enum Roles {
   ADMIN = 'ADMIN',
@@ -21,6 +22,9 @@ export class User extends Document {
 
   @Prop({ default: [Roles.USER] })
   roles: Roles[];
+
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }])
+  categories: Category[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

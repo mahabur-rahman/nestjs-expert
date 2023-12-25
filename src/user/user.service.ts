@@ -36,6 +36,9 @@ export class UserService {
 
     return user;
   }
+
+  // current user profile ================
+
   // update user
 
   // delete user
