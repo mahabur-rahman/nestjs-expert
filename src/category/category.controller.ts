@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -48,6 +49,7 @@ export class CategoryController {
 
   // update category
   @Put(':id')
+  @UseGuards(AuthGuard())
   async updateCategory(
     @Param('id')
     id: string,
@@ -55,5 +57,15 @@ export class CategoryController {
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     return this.categoryService.updateCategory(id, updateCategoryDto);
+  }
+
+  // delete category
+  @Delete(':id')
+  @UseGuards(AuthGuard())
+  async deleteCategory(
+    @Param('id')
+    id: string,
+  ) {
+    return this.categoryService.deleteCategory(id);
   }
 }

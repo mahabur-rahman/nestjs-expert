@@ -61,4 +61,17 @@ export class CategoryService {
       runValidators: true,
     });
   }
+
+  // delete category
+  async deleteCategory(id: string) {
+    const deletedCategory = await this.categoryModel
+      .findByIdAndDelete(id)
+      .exec();
+
+    if (!deletedCategory) {
+      throw new NotFoundException(`Category not found with id: ${id}`);
+    }
+
+    return deletedCategory;
+  }
 }
