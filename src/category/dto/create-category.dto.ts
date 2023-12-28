@@ -12,4 +12,7 @@ export class CreateCategoryDto {
 
   @IsEmpty({ message: 'You can not pass user id.' })
   readonly user: User;
+
+  @IsEmpty()
+  readonly products: string[];
 }

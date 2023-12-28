@@ -18,7 +18,7 @@ export class CategoryService {
 
   // create category if user login
   async createCategory(category: Category, user: User) {
-    const data = Object.assign(category, { user: user._id });
+    const data = Object.assign(category, { user: user._id, products: [] });
     const newCategory = await this.categoryModel.create(data);
     return newCategory;
   }
