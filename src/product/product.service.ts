@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from './schema/product.schema';
 import mongoose from 'mongoose';
@@ -21,5 +21,19 @@ export class ProductService {
   // find all products
   async getAllProducts() {
     return this.productModel.find().populate('user').populate('category');
+  }
+
+  // find single product
+  async getProductById(productId: string): Promise<Product> {
+    const isValidId = mongoose.isValidObjectId(productId);
+
+    if (!isValidId) throw new NotFoundException(`Product id not valid yet.`);
+
+    const product = await this.productModel
+      .findById(productId)
+      .populate('user')
+      .populate('category');
+
+    return product;
   }
 }

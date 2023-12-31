@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -23,5 +31,11 @@ export class ProductController {
   @Get()
   async getAllProducts() {
     return await this.productService.getAllProducts();
+  }
+
+  // find single product
+  @Get(':id')
+  async getProductById(@Param('id') id: string) {
+    return await this.productService.getProductById(id);
   }
 }
