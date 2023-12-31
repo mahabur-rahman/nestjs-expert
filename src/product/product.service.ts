@@ -36,4 +36,25 @@ export class ProductService {
 
     return product;
   }
+
+  // update product
+  async updateProduct(
+    productId: string,
+    updatedProductData: Partial<Product>,
+  ): Promise<Product> {
+    const isValidId = mongoose.isValidObjectId(productId);
+
+    if (!isValidId) throw new NotFoundException(`Product id is not valid yet.`);
+
+    const updatedProduct = await this.productModel
+      .findByIdAndUpdate(productId, updatedProductData, { new: true })
+      .populate('user')
+      .populate('category');
+
+    if (!updatedProduct) {
+      throw new NotFoundException(`Product with id ${productId} not found.`);
+    }
+
+    return updatedProduct;
+  }
 }
