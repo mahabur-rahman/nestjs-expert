@@ -8,7 +8,7 @@ import { Product } from '../../product/schema/product.schema';
 })
 export class Review {
   @Prop()
-  ratings: number;
+  ratings: string;
 
   @Prop()
   comment: string;
