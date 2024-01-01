@@ -7,7 +7,6 @@ import {
 } from 'class-validator';
 import { User } from 'src/auth/schema/user.schema';
 import { Category } from 'src/category/schema/category.schema';
-import { Review } from 'src/review/schema/review.schema';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -33,6 +32,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   readonly category: Category;
 
-  @IsNotEmpty()
-  readonly reviews: Review[];
+  // @IsNotEmpty()
+  // readonly reviews: Review[];
 }
