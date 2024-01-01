@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
-import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -18,7 +17,6 @@ import { ReviewModule } from './review/review.module';
     UserModule,
     CategoryModule,
     ProductModule,
-    ReviewModule,
   ],
   controllers: [],
   providers: [],
