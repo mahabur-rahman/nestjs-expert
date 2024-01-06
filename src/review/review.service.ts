@@ -29,7 +29,16 @@ export class ReviewService {
   // findAll review
 
   async findAllReviews(): Promise<Review[]> {
-    const reviews = await this.reviewModel.find().exec();
+    const reviews = await this.reviewModel
+      .find()
+      .populate({
+        path: 'product',
+        populate: {
+          path: 'category', // Specify the field to populate inside the Product object
+          model: 'Category', // Assuming 'Category' is the model name for the category schema
+        },
+      })
+      .exec();
     return reviews;
   }
 
