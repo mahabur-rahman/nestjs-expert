@@ -59,4 +59,21 @@ export class ReviewService {
 
     return existingReview;
   }
+
+  // delete review
+  async deleteReview(id: string): Promise<Review> {
+    const reviewToDelete = await this.reviewModel.findById(id).exec();
+
+    if (!reviewToDelete) {
+      throw new NotFoundException('Review not found');
+    }
+
+    const deletedReview = await this.reviewModel.findByIdAndDelete(id).exec();
+
+    if (!deletedReview) {
+      throw new NotFoundException('Review not found');
+    }
+
+    return reviewToDelete.toObject(); // Return the deleted review
+  }
 }

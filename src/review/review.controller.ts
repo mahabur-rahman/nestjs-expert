@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -48,5 +49,12 @@ export class ReviewController {
     @Body() updateReviewDto: UpdateReviewDto,
   ) {
     return this.reviewService.updateReview(id, updateReviewDto);
+  }
+
+  // delete review
+
+  @Delete(':id')
+  async deleteReview(@Param('id') id: string) {
+    return this.reviewService.deleteReview(id);
   }
 }
