@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
 import { Product } from 'src/product/schema/product.schema';
@@ -17,5 +17,7 @@ export class Review {
   user: User; //it refers user ID
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Product' })
-  Product: Product;
+  product: Product;
 }
+
+export const ReviewSchema = SchemaFactory.createForClass(Review);

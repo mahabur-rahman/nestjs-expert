@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Category } from 'src/category/schema/category.schema';
 import { Product } from 'src/product/schema/product.schema';
+import { Review } from 'src/review/schema/review.schema';
 
 export enum Roles {
   ADMIN = 'ADMIN',
@@ -30,8 +31,8 @@ export class User extends Document {
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }])
   products: Product[];
 
-  // @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }])
-  // reviews: Review[];
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }])
+  reviews: Review[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

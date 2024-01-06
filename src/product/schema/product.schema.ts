@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { User } from 'src/auth/schema/user.schema';
 import { Category } from 'src/category/schema/category.schema';
+import { Review } from 'src/review/schema/review.schema';
 
 @Schema({
   timestamps: true,
@@ -28,8 +29,8 @@ export class Product {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
   category: Category; // it refers category ID
 
-  // @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }])
-  // reviews: Review[];
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }])
+  reviews: Review[];
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
