@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateReviewDto } from './dto/create-review.dto';
@@ -17,5 +17,11 @@ export class ReviewController {
     req,
   ) {
     return this.reviewService.createReview(createReviewDto, req.user);
+  }
+
+  // findAll review
+  @Get()
+  async findAllReviews() {
+    return this.reviewService.findAllReviews();
   }
 }

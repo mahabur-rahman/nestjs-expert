@@ -24,4 +24,11 @@ export class ReviewService {
 
     return newReview;
   }
+
+  // findAll review
+
+  async findAllReviews(): Promise<Review[]> {
+    const reviews = await this.reviewModel.find().exec();
+    return reviews;
+  }
 }
