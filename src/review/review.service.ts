@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Review } from './schema/review.schema';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { UpdateReviewDto } from './dto/update-review.dto';
 
 @Injectable()
 export class ReviewService {
@@ -30,5 +31,32 @@ export class ReviewService {
   async findAllReviews(): Promise<Review[]> {
     const reviews = await this.reviewModel.find().exec();
     return reviews;
+  }
+
+  // find one review
+  async findOneReview(id: string): Promise<Review> {
+    const review = await this.reviewModel.findById(id).exec();
+
+    if (!review) {
+      throw new NotFoundException('Review not found');
+    }
+
+    return review;
+  }
+
+  // update review
+  async updateReview(
+    id: string,
+    updateReviewDto: UpdateReviewDto,
+  ): Promise<Review> {
+    const existingReview = await this.reviewModel
+      .findByIdAndUpdate(id, updateReviewDto, { new: true })
+      .exec();
+
+    if (!existingReview) {
+      throw new NotFoundException('Review not found');
+    }
+
+    return existingReview;
   }
 }
