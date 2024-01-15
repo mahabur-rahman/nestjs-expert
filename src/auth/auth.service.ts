@@ -4,12 +4,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { User } from './schema/user.schema';
+import { JwtService } from '@nestjs/jwt';
+import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { SignUpDto } from './dto/signUp.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +19,6 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  //   signup user
   async signUp(signUpDto: SignUpDto): Promise<{ user: any; token: string }> {
     const { name, email, password } = signUpDto;
 
@@ -43,7 +42,6 @@ export class AuthService {
     return { user: newUser, token };
   }
 
-  // login user
   async login(loginDto: LoginDto): Promise<{ token: string; user: any }> {
     const { email, password } = loginDto;
 
