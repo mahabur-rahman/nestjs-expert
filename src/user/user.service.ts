@@ -68,7 +68,7 @@ export class UserService {
     response.cookie('refreshToken', token, {
       httpOnly: true,
       maxAge: 3600000,
-    }); // Example settings
+    });
 
     const userWithoutPassword = { ...user.toJSON() };
     delete userWithoutPassword.password;
