@@ -72,4 +72,14 @@ export class UserController {
       throw new UnauthorizedException();
     }
   }
+
+  // logout
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('refreshToken');
+
+    return {
+      message: 'Logout successful!',
+    };
+  }
 }
