@@ -64,6 +64,9 @@ export class UserService {
 
     const token = this.jwtService.sign({ id: user._id });
 
+    // status code change
+    response.status(200);
+
     // Set the cookie in the response
     response.cookie('refreshToken', token, {
       httpOnly: true,
@@ -74,5 +77,24 @@ export class UserService {
     delete userWithoutPassword.password;
 
     return { user: userWithoutPassword, token };
+  }
+
+  // authenticated user
+  async getAuthenticatedUser(request: any, response: Response): Promise<User> {
+    try {
+      const accessToken = request.headers.authorization.replace('Bearer ', '');
+      const { id } = await this.jwtService.verifyAsync(accessToken);
+      console.log(id);
+      const user = await this.userModel.findOne({ _id: id });
+      console.log(user);
+      if (!user) {
+        throw new UnauthorizedException('User not found!');
+      }
+
+      return user;
+    } catch (err) {
+      console.error('Error in getAuthenticatedUser:', err.message);
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
