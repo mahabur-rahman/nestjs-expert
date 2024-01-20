@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
@@ -31,7 +39,6 @@ export class UserController {
   }
 
   // authenticated user
-  // authenticated user
   @Get('/me')
   async getAuthenticatedUser(@Req() request: any, @Res() response: Response) {
     try {
@@ -39,11 +46,30 @@ export class UserController {
         request,
         response,
       );
-      response.status(200).json(authenticatedUser); // Explicitly set status and send response
+      response.status(200).json(authenticatedUser);
     } catch (err) {
-      console.error('Error in getAuthenticatedUser:', err.message);
-      // Handle errors and send an appropriate response
       response.status(500).json({ error: err.message });
+    }
+  }
+
+  // refresh token
+  @Post('refresh')
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    try {
+      const refreshToken = request.cookies['refreshToken'];
+      const { id } = await this.jwtService.verifyAsync(refreshToken);
+      const token = await this.jwtService.signAsync(
+        { id },
+        { expiresIn: '30s' },
+      );
+      return {
+        token,
+      };
+    } catch (err) {
+      throw new UnauthorizedException();
     }
   }
 }
