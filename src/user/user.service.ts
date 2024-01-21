@@ -11,6 +11,7 @@ import { User } from './schemas/user.schema';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,7 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private jwtService: JwtService,
+    private tokenService: TokenService,
   ) {}
   // signup user
   async signUp(signUpDto: SignUpDto): Promise<{ user: any; token: string }> {
@@ -63,6 +65,16 @@ export class UserService {
     }
 
     const token = this.jwtService.sign({ id: user._id });
+
+    // revoking token in db when login
+    const expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + 7);
+
+    await this.tokenService.save({
+      userId: user._id,
+      token: token,
+      expiredAt,
+    });
 
     // status code change
     response.status(200);

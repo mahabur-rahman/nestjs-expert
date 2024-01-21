@@ -12,12 +12,14 @@ import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { TokenService } from './token.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
   ) {}
 
   // signup user
@@ -60,13 +62,27 @@ export class UserController {
   ) {
     try {
       const refreshToken = request.cookies['refreshToken'];
+
       const { id } = await this.jwtService.verifyAsync(refreshToken);
-      const token = await this.jwtService.signAsync(
+
+      // generate access token
+      const accessToken = await this.jwtService.signAsync(
         { id },
-        { expiresIn: '30s' },
+        { expiresIn: '7d' },
       );
+
+      // revoking token
+      const revokingToken = await this.tokenService.findOne({
+        userId: id,
+        expiredAt: { $gte: new Date() },
+      });
+
+      if (!revokingToken) {
+        throw new UnauthorizedException();
+      }
+
       return {
-        token,
+        token: accessToken,
       };
     } catch (err) {
       throw new UnauthorizedException();
@@ -75,11 +91,22 @@ export class UserController {
 
   // logout
   @Post('logout')
-  async logout(@Res({ passthrough: true }) response: Response) {
-    response.clearCookie('refreshToken');
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    try {
+      const refreshToken = request.cookies['refreshToken'];
+      await this.tokenService.delete({ token: refreshToken });
 
-    return {
-      message: 'Logout successful!',
-    };
+      response.clearCookie('refreshToken');
+      return {
+        message: 'Logout successful!',
+      };
+    } catch (error) {
+      return {
+        message: 'Internal server error during logout.',
+      };
+    }
   }
 }
