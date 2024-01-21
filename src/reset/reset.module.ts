@@ -4,6 +4,7 @@ import { ResetController } from './reset.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ResetSchema } from './schemas/reset.schema';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
         from: 'from@example.com',
       },
     }),
+    UserModule,
   ],
   controllers: [ResetController],
   providers: [ResetService],

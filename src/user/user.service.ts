@@ -109,4 +109,17 @@ export class UserService {
       throw new UnauthorizedException('Invalid token');
     }
   }
+
+  // finding user for ( /reset-password ) end point
+  async findOne(options) {
+    return this.userModel.findOne(options);
+  }
+
+  async updatePassword(id: any, options: { password: string }) {
+    // Assuming that `id` is the MongoDB `_id` of the document
+    return this.userModel.findOneAndUpdate(
+      { _id: id },
+      { $set: { password: options.password } },
+    );
+  }
 }

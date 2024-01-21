@@ -15,4 +15,9 @@ export class ResetService {
   async save(body) {
     return this.resetModel.create(body);
   }
+
+  // reset password
+  async findOne(options) {
+    return this.resetModel.findOne(options);
+  }
 }

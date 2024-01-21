@@ -1,12 +1,21 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  NotFoundException,
+  Post,
+} from '@nestjs/common';
 import { ResetService } from './reset.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcryptjs';
 
 @Controller('reset')
 export class ResetController {
   constructor(
     private readonly resetService: ResetService,
     private mailerService: MailerService,
+    private userService: UserService,
   ) {}
 
   // forgot password with send an email
@@ -29,6 +38,36 @@ export class ResetController {
 
     return {
       message: 'Check your email',
+    };
+  }
+
+  // reset password
+  @Post('/reset-password')
+  async reset(
+    @Body('token') token: string,
+    @Body('password') password: string,
+    @Body('password_confirm') password_confirm: string,
+  ) {
+    if (password !== password_confirm) {
+      throw new BadRequestException('Password not match!');
+    }
+
+    const reset = await this.resetService.findOne({ token });
+    // console.log('reset : ', reset);
+
+    const user = await this.userService.findOne({ email: reset.email });
+    // console.log('user : ', user);
+
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+
+    await this.userService.updatePassword(user._id, {
+      password: await bcrypt.hash(password, 12),
+    });
+
+    return {
+      message: 'Password reset successful!',
     };
   }
 }
