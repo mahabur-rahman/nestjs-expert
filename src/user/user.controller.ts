@@ -68,7 +68,7 @@ export class UserController {
       // generate access token
       const accessToken = await this.jwtService.signAsync(
         { id },
-        { expiresIn: '7d' },
+        { expiresIn: '30s' },
       );
 
       // revoking token
