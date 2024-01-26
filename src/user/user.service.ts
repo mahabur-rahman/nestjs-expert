@@ -122,4 +122,10 @@ export class UserService {
       { $set: { password: options.password } },
     );
   }
+
+  // google auth
+
+  async save(body) {
+    return this.userModel.create(body);
+  }
 }

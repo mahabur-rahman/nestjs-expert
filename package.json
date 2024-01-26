@@ -34,6 +34,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "google-auth-library": "^9.5.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "nodemailer": "^6.9.8",
@@ -42,6 +43,7 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "speakeasy": "^2.0.0",
     "update": "^0.7.4"
   },
   "devDependencies": {

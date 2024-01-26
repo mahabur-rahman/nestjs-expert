@@ -13,6 +13,8 @@ import { LoginDto } from './dto/login.dto';
 import { Response, Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { TokenService } from './token.service';
+import { OAuth2Client } from 'google-auth-library';
+import * as bcrypt from 'bcryptjs';
 
 @Controller('user')
 export class UserController {
@@ -108,5 +110,64 @@ export class UserController {
         message: 'Internal server error during logout.',
       };
     }
+  }
+
+  // google auth go to ( https://cloud.google.com/)
+  @Post('google-auth')
+  async googleAuth(
+    @Body('token') token: string, // from google token
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const clientId =
+      '531166191676-deismoet67d6ajnm8plrtc6r8v8pe6ct.apps.googleusercontent.com';
+    const client = new OAuth2Client(clientId);
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: clientId,
+    });
+
+    const googleUser = ticket.getPayload(); // payload
+
+    if (!googleUser) {
+      throw new UnauthorizedException();
+    }
+
+    let user = await this.userService.findOne({ email: googleUser.email });
+
+    if (!user) {
+      user = await this.userService.save({
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+        email: googleUser.email,
+        password: await bcrypt.hash(token, 12),
+      });
+    }
+
+    const accessToken = this.jwtService.sign({ id: user._id });
+
+    // revoking token in db when login
+    const expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + 7);
+
+    await this.tokenService.save({
+      userId: user._id,
+      token: accessToken,
+      expiredAt,
+    });
+
+    // status code change
+    response.status(200);
+
+    // Set the cookie in the response
+    response.cookie('refreshToken', accessToken, {
+      httpOnly: true,
+      maxAge: 3600000,
+    });
+
+    const userWithoutPassword = { ...user.toJSON() };
+    delete userWithoutPassword.password;
+
+    return { user: userWithoutPassword, accessToken };
   }
 }
