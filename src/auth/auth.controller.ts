@@ -2,13 +2,23 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
+import {
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('auth')
+// swagger setup
+@ApiTags('authentication for user')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   // signup user
   @Post('signup')
+  // swagger setup
+  @ApiCreatedResponse({ description: 'User has successfully created!' })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
   async signUp(
     @Body()
     signUpDto: SignUpDto,
@@ -18,6 +28,9 @@ export class AuthController {
 
   // login user
   @Post('login')
+  // swagger setup
+  @ApiCreatedResponse({ description: 'User has successfully loggedIn!' })
+  @ApiForbiddenResponse({ description: 'Something went wrong!' })
   login(
     @Body()
     loginDto: LoginDto,
